@@ -14,8 +14,7 @@ public class Main {
                     gerenciarLivros();
                     break;
                 case 2:
-                    System.out.println("Gerenciar Usuários (Em breve)...");
-                    pause();
+                    gerenciarUsuarios();
                     break;
                 case 3:
                     System.out.println("Empréstimos (Em breve)...");
@@ -32,6 +31,36 @@ public class Main {
         }
     }
 
+
+
+    static void telaMenu() {
+        System.out.println("|===========================================================|");
+        System.out.println("|          🏛️   SISTEMA BIBLIOTECA ROCKETSEAT               |");
+        System.out.println("|===========================================================|");
+        System.out.println("[1] \uD83D\uDCDA GERENCIAR LIVROS");
+        System.out.println("[2] \uD83D\uDC65 GERENCIAR USUARIOS");
+        System.out.println("[3] \uD83D\uDD04 REALIZAR EMPRESTIMO / DEVOLUCÃO");
+        System.out.println("[4] \uD83D\uDCCA RELATORIOS");
+        System.out.println("[0] ❌ SAIR\n");
+        System.out.print("- Opcão: ");
+    }
+
+    static void telaLivros() {
+        limparTela();
+        System.out.println("|===========================================================|");
+        System.out.println("|                📚️   GERENCIAR LIVROS                      |");
+        System.out.println("|===========================================================|");
+        System.out.println("ID  | TÍTULO                | AUTOR          | STATUS");
+        System.out.println("----|-----------------------|----------------|-------------");
+        System.out.println("[1] | Dom Casmurro          | M. de Assis    | ✅ Disponível");
+        System.out.println("[2] | O Código Da Vinci     | Dan Brown      | 🔴 Emprestado");
+        System.out.println("-------------------------------------------------------------");
+        System.out.println("[1] Cadastrar Novo Livro");
+        System.out.println("[2] Remover Livro");
+        System.out.println("[3] Buscar por Título");
+        System.out.println("[0] Voltar\n");
+        System.out.print("- Opcão: ");
+    }
 
     static void gerenciarLivros() {
         while (true) {
@@ -60,34 +89,46 @@ public class Main {
         }
     }
 
-    static void telaMenu() {
-
-        System.out.println("|===========================================================|");
-        System.out.println("|          🏛️   SISTEMA BIBLIOTECA ROCKETSEAT               |");
-        System.out.println("|===========================================================|");
-        System.out.println("[1] \uD83D\uDCDA GERENCIAR LIVROS");
-        System.out.println("[2] \uD83D\uDC65 GERENCIAR USUARIOS");
-        System.out.println("[3] \uD83D\uDD04 REALIZAR EMPRESTIMO / DEVOLUCÃO");
-        System.out.println("[4] \uD83D\uDCCA RELATORIOS");
-        System.out.println("[0] ❌ SAIR\n");
-        System.out.print("- Opcão: ");
-    }
-
-    static void telaLivros() {
+    static void telaUsuarios() {
         limparTela();
         System.out.println("|===========================================================|");
-        System.out.println("|                📚️   GERENCIAR LIVROS                      |");
+        System.out.println("|                📚️   GERENCIAR USUARIOS                    |");
         System.out.println("|===========================================================|");
-        System.out.println("ID  | TÍTULO                | AUTOR          | STATUS");
-        System.out.println("----|-----------------------|----------------|-------------");
-        System.out.println("[1] | Dom Casmurro          | M. de Assis    | ✅ Disponível");
-        System.out.println("[2] | O Código Da Vinci     | Dan Brown      | 🔴 Emprestado");
+        System.out.println("ID  | NOME COMPLETO          | LIVROS | STATUS");
+        System.out.println("----|------------------------|--------|---------------------");
+        System.out.println("[1] | Adryann Silva          |   0    | ✅ Regular");
+        System.out.println("[2] | Maria Souza            |   2    | ⚠️ Pendente (1)");
+        System.out.println("[3] | João da Silva          |   1    | 🔴 Bloqueado (Multa)");
         System.out.println("-------------------------------------------------------------");
         System.out.println("[1] Cadastrar Novo Livro");
         System.out.println("[2] Remover Livro");
         System.out.println("[3] Buscar por Título");
         System.out.println("[0] Voltar\n");
         System.out.print("- Opcão: ");
+    }
+
+    static void gerenciarUsuarios(){
+        while(true){
+            telaUsuarios();
+            int opcao = lerOpcao();
+
+            switch (opcao) {
+                case 1:
+                    pause();
+                    break;
+                case 2:
+                    pause();
+                    break;
+                case 3:
+                    pause();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Opção Inválida!");
+                    pause();
+            }
+        }
     }
 
     static void limparTela() {

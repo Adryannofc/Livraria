@@ -1,14 +1,16 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Livro {
+public class Livro implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private String titulo;
-    private  Autor autor;
+    private  String autor;
     private boolean disponivel;
     private LocalDateTime dataCadastro;
     private LocalDateTime dataAtualizacao;
 
-    public Livro (int id, String titulo, Autor autor){
+    public Livro (int id, String titulo, String autor){
         this.id = id;
         this.titulo = titulo;
         this.autor = autor;
@@ -20,6 +22,14 @@ public class Livro {
     public void emprestar(){
         this.disponivel = false;
         this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    public String getStatusLivro(){
+        if(disponivel){
+            return "✅ Disponivel";
+        } else {
+            return "🔴 Emprestado";
+        }
     }
 
     public void devolver(){
@@ -35,7 +45,7 @@ public class Livro {
         return titulo;
     }
 
-    public Autor getAutor(){
+    public String getAutor(){
         return autor;
     }
 

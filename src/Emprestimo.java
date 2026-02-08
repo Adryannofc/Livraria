@@ -1,6 +1,8 @@
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Emprestimo {
+public class Emprestimo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int id;
     private Livro livro;
     private Usuario usuario;
@@ -18,5 +20,17 @@ public class Emprestimo {
     public void finalizar(){
         this.dataDevolucao = LocalDateTime.now();
         this.livro.devolver();
+    }
+
+    public Livro getLivro(){
+        return livro;
+    }
+
+    public Usuario getUsuario(){
+        return usuario;
+    }
+
+    public boolean isAtivo(){
+        return dataDevolucao == null;
     }
 }

@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner scan = new Scanner(System.in);
+    static Biblioteca biblioteca = BibliotecaStorage.carregar();
 
     public static void main(String[] args) {
         while (true) {
@@ -22,6 +23,7 @@ public class Main {
                     break;
                 case 0:
                     System.out.println("Saindo do sistema...");
+                    BibliotecaStorage.salvar(biblioteca);
                     return;
                 default:
                     System.out.println("Opção Inválida!");
@@ -30,8 +32,6 @@ public class Main {
             limparTela();
         }
     }
-
-
 
     static void telaMenu() {
         System.out.println("|===========================================================|");
@@ -50,16 +50,33 @@ public class Main {
         System.out.println("|===========================================================|");
         System.out.println("|                📚️   GERENCIAR LIVROS                      |");
         System.out.println("|===========================================================|");
-        System.out.println("ID  | TÍTULO                | AUTOR          | STATUS");
-        System.out.println("----|-----------------------|----------------|-------------");
-        System.out.println("[1] | Dom Casmurro          | M. de Assis    | ✅ Disponível");
-        System.out.println("[2] | O Código Da Vinci     | Dan Brown      | 🔴 Emprestado");
-        System.out.println("-------------------------------------------------------------");
+        listarLivros();
         System.out.println("[1] Cadastrar Novo Livro");
         System.out.println("[2] Remover Livro");
         System.out.println("[3] Buscar por Título");
         System.out.println("[0] Voltar\n");
         System.out.print("- Opcão: ");
+    }
+
+    static void cadastrarLivro() {
+        limparTela(); // Começa com a tela limpa
+        System.out.println("===========================================================");
+        System.out.println("            📚️  CADASTRO DE NOVO LIVRO                     ");
+        System.out.println("===========================================================");
+
+        System.out.print("Titulo: ");
+        String titulo = scan.nextLine();
+
+
+        System.out.print("Autor: ");
+        String autor = scan.nextLine();
+
+        int novoId = biblioteca.getLivros().size() + 1;
+        Livro novoLivro = new Livro(novoId, titulo, autor);
+        biblioteca.cadastrarLivro(novoLivro);
+        BibliotecaStorage.salvar(biblioteca);
+        System.out.println("===========================================================");
+        System.out.println(" ✅ Livro cadastrado com sucesso! ID gerado: " + novoId);
     }
 
     static void gerenciarLivros() {
@@ -69,8 +86,7 @@ public class Main {
 
             switch (opcao) {
                 case 1:
-                    System.out.println(">> Cadastrando livro...");
-                    pause();
+                    cadastrarLivro();
                     break;
                 case 2:
                     System.out.println(">> Removendo livro...");
@@ -89,32 +105,69 @@ public class Main {
         }
     }
 
+    static void listarLivros() {
+        System.out.printf(" %-5s | %-20s | %-16s | %s %n", "ID", "TITULO", "AUTOR", "STATUS");
+        System.out.println("-------|----------------------|------------------|---------");
+
+        if (biblioteca.getLivros().isEmpty()) {
+            System.out.println("   (Nenhum livro cadastrado)");
+        } else {
+            for (Livro l : biblioteca.getLivros()) {
+                System.out.printf(" [%03d] | %-20s | %-16s | %s %n" +
+                                "",
+                        l.getId(),
+                        l.getTitulo(),
+                        l.getAutor(),
+                        l.getStatusLivro());
+            }
+        }
+        System.out.println("=============================================================");
+    }
+
     static void telaUsuarios() {
         limparTela();
         System.out.println("|===========================================================|");
         System.out.println("|                📚️   GERENCIAR USUARIOS                    |");
         System.out.println("|===========================================================|");
-        System.out.println("ID  | NOME COMPLETO          | LIVROS | STATUS");
-        System.out.println("----|------------------------|--------|---------------------");
-        System.out.println("[1] | Adryann Silva          |   0    | ✅ Regular");
-        System.out.println("[2] | Maria Souza            |   2    | ⚠️ Pendente (1)");
-        System.out.println("[3] | João da Silva          |   1    | 🔴 Bloqueado (Multa)");
+        listarUsuarios();
         System.out.println("-------------------------------------------------------------");
-        System.out.println("[1] Cadastrar Novo Livro");
-        System.out.println("[2] Remover Livro");
-        System.out.println("[3] Buscar por Título");
+        System.out.println("[1] Cadastrar");
+        System.out.println("[2] Remover");
+        System.out.println("[3] Buscar");
         System.out.println("[0] Voltar\n");
         System.out.print("- Opcão: ");
     }
 
-    static void gerenciarUsuarios(){
-        while(true){
+    static void cadastrarUsuario() {
+        limparTela(); // Começa com a tela limpa
+        System.out.println("===========================================================");
+        System.out.println("            📝  CADASTRO DE NOVO LEITOR                    ");
+        System.out.println("===========================================================");
+
+        System.out.print("Nome Completo: ");
+        String nome = scan.nextLine();
+
+        int novoId = biblioteca.getUsuarios().size() + 1;
+
+        Usuario novoUsuario = new Usuario(novoId, nome);
+
+        biblioteca.cadastrarUsuario(novoUsuario);
+        BibliotecaStorage.salvar(biblioteca);
+
+        System.out.println("===========================================================");
+        System.out.println(" ✅ Usuário cadastrado com sucesso! ID gerado: " + novoId);
+
+        pause();
+    }
+
+    static void gerenciarUsuarios() {
+        while (true) {
             telaUsuarios();
             int opcao = lerOpcao();
 
             switch (opcao) {
                 case 1:
-                    pause();
+                    cadastrarUsuario();
                     break;
                 case 2:
                     pause();
@@ -131,13 +184,32 @@ public class Main {
         }
     }
 
+    static void listarUsuarios() {
+        System.out.printf(" %-5s | %-24s | %-6s | %s %n", "ID", "NOME", "LIVROS", "STATUS");
+        System.out.println("-------|--------------------------|--------|----------------");
+
+        if (biblioteca.getUsuarios().isEmpty()) {
+            System.out.println("   (Nenhum usuário cadastrado)");
+        } else {
+            for (Usuario u : biblioteca.getUsuarios()) {
+                System.out.printf(" [%03d] | %-24s |   %-4d | %s %n",
+                        u.getId(),
+                        u.getNome(),
+                        u.getLivrosComEle(),
+                        u.getStatusUsuario()
+                );
+            }
+        }
+        System.out.println("===============================================================");
+    }
+
     static void limparTela() {
         for (int i = 0; i < 50; i++) {
             System.out.println();
         }
     }
 
-    static void pause(){
+    static void pause() {
         System.out.print("Pressione ENTER para continuar...");
         scan.nextLine(); // Usa o Scanner GLOBAL
     }

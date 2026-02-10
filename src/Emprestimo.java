@@ -15,11 +15,15 @@ public class Emprestimo implements Serializable {
         this.usuario = usuario;
         this.dataEmprestimo = LocalDateTime.now();
         this.dataDevolucao = null;
+
+        this.livro.emprestar();
+        this.usuario.pegarLivro();
     }
 
     public void finalizar(){
         this.dataDevolucao = LocalDateTime.now();
         this.livro.devolver();
+        this.usuario.devolverLivro();
     }
 
     public Livro getLivro(){

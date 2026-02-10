@@ -14,6 +14,16 @@ public class Usuario implements Serializable {
         this.nome = nome;
     }
 
+    public void pegarLivro(){
+        this.livrosComEle++;
+    }
+
+    public void devolverLivro(){
+        if(livrosComEle > 0) {
+            this.livrosComEle--;
+        }
+    }
+
     public int getId() {
         return id;
     }

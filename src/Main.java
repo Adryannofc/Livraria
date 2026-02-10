@@ -3,7 +3,6 @@ import java.util.Scanner;
 public class Main {
     static Scanner scan = new Scanner(System.in);
     static Biblioteca biblioteca = BibliotecaStorage.carregar();
-
     public static void main(String[] args) {
         while (true) {
             telaMenu();
@@ -18,8 +17,7 @@ public class Main {
                     gerenciarUsuarios();
                     break;
                 case 3:
-                    System.out.println("Empréstimos (Em breve)...");
-                    pause();
+                    gerenciarEmprestimos();
                     break;
                 case 0:
                     System.out.println("Saindo do sistema...");
@@ -201,6 +199,134 @@ public class Main {
             }
         }
         System.out.println("===============================================================");
+    }
+
+    static void telaEmprestimos(){
+        System.out.println("=====================================");
+        System.out.println("  🔄 EMPRÉSTIMOS E DEVOLUÇÕES");
+        System.out.println("=====================================");
+        System.out.println("[1] 📤 Realizar Empréstimo");
+        System.out.println("[2] 📥 Realizar Devolução");
+        System.out.println("[0] Voltar");
+        System.out.print("Opção: ");
+    }
+
+
+    static void gerenciarEmprestimos(){
+        while (true){
+            telaEmprestimos();
+            int opcao = lerOpcao();
+
+            switch (opcao){
+                case 1: realizarEmprestimo();
+                    break;
+                case 2: realizarDevolucao();
+                    break;
+                case 0:
+                    return;
+                default:
+                    System.out.println("Opção Inválida!");
+                    pause();
+            }
+        }
+    }
+
+    static void realizarEmprestimo(){
+        limparTela();
+        System.out.println("--- NOVO EMPRÉSTIMO ---");
+
+        listarUsuarios();
+        System.out.print("ID do Usuario: ");
+        int idUser = lerOpcao();
+        Usuario usuario = buscarUsuarioId(idUser);
+
+        if(usuario == null){
+            System.out.println("❌ Usuário não encontrado!");
+            pause();
+            return;
+        }
+
+        if(usuario.getLivrosComEle() >= 3){
+            System.out.println("⛔ ERRO: Usuário já atingiu o limite de 3 livros!");
+            pause();
+            return;
+        }
+
+        System.out.println("-----------------------");
+        System.out.print("ID do Livro: ");
+        int idLivro = lerOpcao();
+        Livro livro = buscarLivroId(idLivro);
+
+        if(livro == null){
+            System.out.println("❌ Livro não encontrado!");
+            pause();
+            return;
+        }
+
+        if(!livro.getDisponivel()) {
+            System.out.println("⚠️ Esse livro já está emprestado!");
+            pause();
+            return;
+        }
+
+        int idEmp = biblioteca.getEmprestimos().size() + 1;
+        Emprestimo emp = new Emprestimo(idEmp, livro, usuario);
+
+
+        biblioteca.registrarEmprestimo(emp);
+        livro.emprestar();
+        usuario.pegarLivro();
+
+        BibliotecaStorage.salvar(biblioteca);
+
+        System.out.println("✅ Empréstimo realizado com sucesso!");
+        pause();
+    }
+
+    static void realizarDevolucao(){
+        limparTela();
+        System.out.println("--- DEVOLUÇÃO DE LIVRO ---");
+
+        System.out.print("Digite o ID do Livro que está retornando: ");
+        int idLivro = lerOpcao();
+
+        Emprestimo emprestimoAlvo = null;
+        for(Emprestimo e : biblioteca.getEmprestimos()){
+            if(e.getLivro().getId() == idLivro && e.isAtivo()){
+                emprestimoAlvo = e;
+                break;
+            }
+        }
+
+        if (emprestimoAlvo == null) {
+            System.out.println("❌ Não encontrei nenhum empréstimo ativo para este livro!");
+            pause(); return;
+        }
+
+        emprestimoAlvo.finalizar();
+        emprestimoAlvo.getUsuario().devolverLivro();
+
+        BibliotecaStorage.salvar(biblioteca);
+        System.out.println("✅ Livro devolvido com sucesso!");
+        pause();
+    }
+
+    static Usuario buscarUsuarioId(int id){
+        for(Usuario u : biblioteca.getUsuarios()){
+            if(u.getId() == id){
+                return u;
+            }
+        }
+        return null;
+    }
+
+    static Livro buscarLivroId(int id) {
+        for(Livro l : biblioteca.getLivros()){
+            if(l.getId() == id){
+                return l;
+            }
+        }
+        return null;
     }
 
     static void limparTela() {
